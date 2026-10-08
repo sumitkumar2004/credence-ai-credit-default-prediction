@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b18">
+  <title>Credence AI — Default Risk Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Credence AI home">
+        <span class="brand-mark"><span></span><span></span><span></span></span>
+        <span>credence<span class="brand-ai">/AI</span></span>
+      </a>
+      <div class="topbar-right">
+        <span class="live-dot"></span><span class="mono tiny">RISK ENGINE <b>ONLINE</b></span>
+        <span class="top-divider"></span>
+        <span class="mono tiny version">BUILD 02.6</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="eyebrow-line"></span> CREDIT INTELLIGENCE / 01</div>
+          <h1>See risk<br>before it <span class="gradient-text">happens.</span></h1>
+          <p class="hero-description">A machine-learning workspace for exploring credit-card repayment risk. Enter a
+            customer profile to generate a model-based estimate in seconds.</p>
+          <div class="hero-meta">
+            <div class="meta-item"><span class="meta-icon">✳</span><span><b>Predictive</b><small>ML-powered
+                  estimate</small></span></div>
+            <div class="meta-rule"></div>
+            <div class="meta-item"><span class="meta-icon">⌁</span><span><b>Explainable flow</b><small>Inputs →
+                  probability</small></span></div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Abstract data visualization">
+          <div class="orb orb-outer"></div>
+          <div class="orb orb-middle"></div>
+          <div class="orb orb-inner"></div>
+          <div class="orb-core"><span>CR</span><small>RISK<br>CORE</small></div>
+          <div class="orbit-label label-top"><span class="live-dot"></span> MODEL ACTIVE</div>
+          <div class="orbit-label label-bottom mono">P(default) <b>→</b> 0—100%</div>
+          <div class="visual-cross cross-one"></div>
+          <div class="visual-cross cross-two"></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / CUSTOMER PROFILE</div>
+            <h2>Build a risk profile<span class="accent-dot">.</span></h2>
+          </div>
+          <div class="model-chip"><span class="chip-pulse"></span><span class="mono">ACTIVE MODEL</span><b>{{ model_name
+              }}</b></div>
+        </div>
+
+        {% if error %}
+        <div class="alert"><span class="alert-symbol">!</span>
+          <div><b>Prediction unavailable</b>
+            <p>{{ error }}</p>
+          </div>
+        </div>
+        {% endif %}
+
+        <form method="POST" action="/" id="risk-form">
+          <div class="form-grid">
+            <section class="form-panel">
+              <div class="panel-head"><span class="panel-index">A</span>
+                <div>
+                  <h3>Identity & credit line</h3>
+                  <p>Baseline customer information</p>
+                </div><span class="panel-number mono">05 FIELDS</span>
+              </div>
+              <div class="fields-grid">
+                <label class="field field-wide"><span>Credit limit <i>LIMIT_BAL</i></span>
+                  <div class="input-wrap"><span class="input-prefix">NT$</span><input type="number" name="LIMIT_BAL"
+                      min="0" step="1000" placeholder="e.g. 150000" value="{{ submitted.get('LIMIT_BAL', '150000') }}"
+                      required></div><small>Approved card limit</small>
+                </label>
+                <label class="field"><span>Age <i>AGE</i></span>
+                  <div class="input-wrap"><input type="number" name="AGE" min="18" max="100" placeholder="30"
+                      value="{{ submitted.get('AGE', '30') }}" required><span class="input-suffix">yrs</span></div>
+                </label>
+                <label class="field"><span>Sex code <i>SEX</i></span><select name="SEX" required>{% for v,t in [(1,'1 ·
+                    Male (dataset code)'),(2,'2 · Female (dataset code)')] %}<option value="{{v}}" {% if
+                      submitted.get('SEX', '2' )|int==v %}selected{% endif %}>{{t}}</option>{% endfor
+                    %}</select></label>
+                <label class="field"><span>Education code <i>EDUCATION</i></span><select name="EDUCATION" required>{%
+                    for v,t in [(1,'1 · Graduate school'),(2,'2 · University'),(3,'3 · High school'),(4,'4 ·
+                    Other'),(5,'5 · Unknown / grouped')] %}<option value="{{v}}" {% if submitted.get('EDUCATION', '2'
+                      )|int==v %}selected{% endif %}>{{t}}</option>{% endfor %}</select></label>
+                <label class="field"><span>Marriage code <i>MARRIAGE</i></span><select name="MARRIAGE" required>{% for
+                    v,t in [(1,'1 · Married'),(2,'2 · Single'),(3,'3 · Other / grouped')] %}<option value="{{v}}" {% if
+                      submitted.get('MARRIAGE', '2' )|int==v %}selected{% endif %}>{{t}}</option>{% endfor
+                    %}</select></label>
+              </div>
+            </section>
+
+            <section class="form-panel">
+              <div class="panel-head"><span class="panel-index">B</span>
+                <div>
+                  <h3>Repayment behaviour</h3>
+                  <p>Recent repayment status codes</p>
+                </div><span class="panel-number mono">06 FIELDS</span>
+              </div>
+              <p class="helper-note">Use the dataset’s status codes: -2, -1, 0 and positive values indicate different
+                repayment states.</p>
+              <div class="fields-grid pay-grid">
+                {% for col, label in [('PAY_0','Most recent'),('PAY_2','2 months ago'),('PAY_3','3 months
+                ago'),('PAY_4','4 months ago'),('PAY_5','5 months ago'),('PAY_6','6 months ago')] %}
+                <label class="field"><span>{{ label }} <i>{{ col }}</i></span><select name="{{ col }}" required>{% for v
+                    in [-2,-1,0,1,2,3,4,5,6,7,8] %}<option value="{{v}}" {% if submitted.get(col, '0' )|int==v
+                      %}selected{% endif %}>{{v}}</option>{% endfor %}</select></label>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="form-panel panel-wide">
+              <div class="panel-head"><span class="panel-index">C</span>
+                <div>
+                  <h3>Statement & payment history</h3>
+                  <p>Last six billing statements and payment amounts</p>
+                </div><span class="panel-number mono">12 FIELDS</span>
+              </div>
+              <div class="history-layout">
+                <div class="history-block">
+                  <div class="history-title"><span class="mini-symbol bill-symbol">↗</span>
+                    <div><b>Bill statement amounts</b><small>BILL_AMT1 — BILL_AMT6</small></div>
+                  </div>
+                  <div class="history-fields">
+                    {% for col, label in [('BILL_AMT1','Month 1'),('BILL_AMT2','Month 2'),('BILL_AMT3','Month
+                    3'),('BILL_AMT4','Month 4'),('BILL_AMT5','Month 5'),('BILL_AMT6','Month 6')] %}
+                    <label class="field"><span>{{ label }} <i>{{ col }}</i></span><input type="number" name="{{ col }}"
+                        step="any" value="{{ submitted.get(col, '0') }}" required></label>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div class="history-block">
+                  <div class="history-title"><span class="mini-symbol pay-symbol">↘</span>
+                    <div><b>Previous payment amounts</b><small>PAY_AMT1 — PAY_AMT6</small></div>
+                  </div>
+                  <div class="history-fields">
+                    {% for col, label in [('PAY_AMT1','Month 1'),('PAY_AMT2','Month 2'),('PAY_AMT3','Month
+                    3'),('PAY_AMT4','Month 4'),('PAY_AMT5','Month 5'),('PAY_AMT6','Month 6')] %}
+                    <label class="field"><span>{{ label }} <i>{{ col }}</i></span><input type="number" name="{{ col }}"
+                        min="0" step="any" value="{{ submitted.get(col, '0') }}" required></label>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="form-footer">
+            <div class="privacy-note"><span class="lock-icon">◇</span><span><b>Local inference</b><small>Inputs are
+                  processed by this app instance.</small></span></div>
+            <div class="form-actions"><button type="reset" class="reset-btn" id="reset-btn">Reset fields
+                <span>↺</span></button><button type="submit" class="submit-btn"><span>Generate risk estimate</span><span
+                  class="button-arrow">↗</span></button></div>
+          </div>
+        </form>
+      </section>
+
+      {% if result %}
+      <section class="result-section" id="result">
+        <div class="result-top">
+          <div>
+            <div class="eyebrow">02 / MODEL OUTPUT</div>
+            <h2>Risk assessment<span class="accent-dot">.</span></h2>
+          </div><span class="result-tag"><span class="live-dot"></span> COMPLETE</span>
+        </div>
+        <div class="result-card {% if result.prediction == 1 %}risk-high{% else %}risk-low{% endif %}">
+          <div class="result-main">
+            <div class="result-label">ESTIMATED DEFAULT PROBABILITY</div>
+            <div class="probability">{{ "%.1f"|format(result.probability) }}<span>%</span></div>
+            <div class="probability-track"><span style="width: {{ result.probability }}%"></span><i
+                style="left: {{ result.threshold }}%"></i></div>
+            <div class="track-caption"><span>0% · Lower probability</span><span>100% · Higher probability</span></div>
+          </div>
+          <div class="result-side"><span class="result-icon">{% if result.prediction == 1 %}↗{% else %}✓{% endif
+              %}</span>
+            <div class="result-label">MODEL CLASSIFICATION</div>
+            <h3>{{ result.risk_label }}</h3>
+            <p>{% if result.prediction == 1 %}The estimated probability is at or above the configured decision
+              threshold.{% else %}The estimated probability is below the configured decision threshold.{% endif %}</p>
+            <div class="result-threshold"><span>Decision threshold</span><b>{{ "%.1f"|format(result.threshold) }}%</b>
+            </div>
+          </div>
+        </div>
+        <p class="disclaimer">Research demonstration only. This output is a model estimate, not a credit decision,
+          financial advice, or a guarantee of future behaviour. Do not use it as the sole basis for lending decisions.
+        </p>
+      </section>
+      {% endif %}
+    </main>
+    <footer>
+      <div class="footer-brand">credence<span>/AI</span></div><span>BUILT FOR EXPLORATION, NOT AUTOMATED
+        DECISIONS.</span><span class="mono">Sumit©2026</span>
+    </footer>
+  </div>
+  <script>
+    const form = document.getElementById('risk-form');
+    if (form) {
+      form.addEventListener('submit', () => {
+        const button = form.querySelector('.submit-btn');
+        button.classList.add('loading');
+        button.querySelector('span:first-child').textContent = 'Analysing profile…';
+      });
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        setTimeout(() => {
+          form.querySelectorAll('input').forEach((input) => {
+            if (input.name.startsWith('BILL_AMT') || input.name.startsWith('PAY_AMT')) input.value = '0';
+          });
+        }, 0);
+      });
+    }
+  </script>
+</body>
+
+</html>
